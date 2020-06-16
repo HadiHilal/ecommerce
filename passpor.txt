@@ -1,0 +1,5 @@
+Client ID: 1
+Client secret: ik65EeSkOrfuurkK4ptsNK5YuAHTxXXdtfVJIQMj
+Password grant client created successfully.
+Client ID: 2
+Client secret: KZZHu2xRfpse53F8B5RIt7VPODGXELpQtCaXwzu1
