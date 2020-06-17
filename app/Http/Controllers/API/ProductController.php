@@ -47,24 +47,21 @@ class ProductController extends Controller
         ]);
 
 
-
-        if($request->img ){
-            $name = time().'.' . explode('/', explode(':', substr($request->img, 0, strpos($request->img, ';')))[1])[1];
-
-            \Image::make($request->img)->save(public_path('img/products/').$name);
-            $request->merge(['img' => $name]);
-
+        $path=null;
+        $data= $request->except('_token','img');
+        if($request->file('img')){
+            $image = $request->file('img');
+            $filename = $image->getClientOriginalName();
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $name = time().(int) rand(10, 1000000).'.'.$ext;
+            $path = 'img/products/_'.$name;
+            \Storage::disk('public')->put($path, file_get_contents($image->getRealPath()));
+            $data['img'] = $path;
 
         }
+        Product::create($data);
 
-            Product::create([
-                'name'         => $request['name'],
-                'catego_id'    => $request['catego_id'],
-                'description'  => $request['description'],
-                'show'         => $request['show'],
-                'img'          => $request['img'],
-                'price'        => $request['price'],
-            ]);
+
 
     }
 
@@ -91,14 +88,27 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $product = Product::find($id);
         $request->validate([
             'name' => 'required|string|unique:products,name,' . $id,
             'catego_id' => 'required',
             'show'      => 'required' ,
             'price'     => 'required|integer'
         ]);
-        $product->update($request->all());
+        $product = Product::find($id);
+        $path=null;
+        $data= $request->except('_token','img');
+        if($request->img){
+            $image = $request->file('img');
+            $filename = $image->getClientOriginalName();
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $name = time().(int) rand(10, 1000000).'.'.$ext;
+            $path = 'img/products/_'.$name;
+            \Storage::disk('public')->put($path, file_get_contents($image->getRealPath()));
+            $data['img'] = $path;
+
+        }
+
+        $product->update($data);
         return ['message' => 'its update'];
     }
 

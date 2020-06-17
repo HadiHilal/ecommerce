@@ -23,6 +23,7 @@
                   <th>Descripition</th>
                   <th>Price</th>
                   <th>Status</th>
+                   <th>Img</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -33,6 +34,7 @@
                   <td>{{product.catego.name}}</td>
                   <td>{{product.description}}</td>
                   <td>${{product.price}}</td>
+                  <td><img :src="product.img?'/storage/'+product.img:'/img/products/prod-1.jpg'" height="40px" width="40px" alt=""></td>
                   <td v-if="product.show">Shown</td>
                   <td v-if="!product.show">Hidden</td>
 
@@ -119,7 +121,7 @@
                   name="price"
                   placeholder="price the product"
                   class="form-control"
-                  :class="{ 'is-invalid': form.errors.has('name') }"
+                  :class="{ 'is-invalid': form.errors.has('price') }"
                 />
                 <has-error :form="form" field="name"></has-error>
               </div>
@@ -138,7 +140,7 @@
               <div class="form-group">
                 <label for="inputPhoto" class="col-form-label">img</label>
                 <div class="form-control">
-                  <input type="file" @change="onImageChange" name="img" id="inputPhoto" />
+                  <input type="file" @change="onImageChange" name="form.img" id="inputPhoto" />
                 </div>
               </div>
 
@@ -171,6 +173,8 @@
 </template>
 
 <script>
+ const objectToFormData = window.objectToFormData
+
 export default {
   data() {
     return {
@@ -225,7 +229,17 @@ export default {
     createproduct: function() {
       this.$Progress.start();
       this.form
-        .post("api/product")
+        .submit('post',"api/product",{
+              // Transform form data to FormData
+              transformRequest: [function (data, headers) {
+                return objectToFormData(data)
+              }],
+
+              onUploadProgress: e => {
+                // Do whatever you want with the progress event
+                // console.log(e)
+              }
+            })
         .then(() => {
           $("#addNewproductModal").modal("hide");
           Toast.fire({
@@ -235,7 +249,8 @@ export default {
           this.$Progress.finish();
           Fire.$emit("AfterCreate");
         })
-        .catch(() => {
+        .catch((e) => {
+            console.log(e)
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -274,6 +289,7 @@ export default {
       let files = e.target.files || e.dataTransfer.files;
       console.log(files);
       if (!files.length) return;
+      this.form.img=files[0]
       this.createImage(files[0]);
     },
     createImage(file) {
@@ -283,15 +299,16 @@ export default {
         vm.image = e.target.result;
       };
       reader.readAsDataURL(file);
-    }
+    },
+
   },
   created() {
     this.loadproducts();
     this.loadcategos();
-    this.loadproducts();
     Fire.$on("AfterCreate", () => {
       this.loadproducts();
-    });
+    });;
+
   }
 };
 </script>

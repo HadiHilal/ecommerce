@@ -48190,6 +48190,7 @@ readers do not read off random characters that represent icons */
 }
 
 .product-image {
-  max-width: 30%;
+  width: 100px;
+  height: 100px;
 }
 

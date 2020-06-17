@@ -73,7 +73,7 @@
               >
                 <div class="col-12">
                   <img
-                    src="../../../public/img/products/prod-1.jpg"
+                    :src="product.img?'/storage/'+product.img:'/img/products/prod-1.jpg'"
                     width="40%"
                     class="product-image"
                     alt="Product Image"
@@ -82,7 +82,7 @@
 
                 <div class="col-12 col-sm-6">
                   <h3 class="my-3">{{ product.name }}</h3>
-
+                  <p>{{ product.description }}</p>
                   <hr />
                   <h4>Available Colors</h4>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">

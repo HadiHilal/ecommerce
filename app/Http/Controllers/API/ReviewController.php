@@ -43,6 +43,7 @@ class ReviewController extends Controller
             'product_id' => $request->get('product_id'),
             'user_id' => Auth()->id(),
             'count' => $request->get('count'),
+            'comment' => $request->get('comment'),
         ]);
         return ['message' => 'its created'];
     }

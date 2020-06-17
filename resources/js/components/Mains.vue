@@ -73,8 +73,7 @@
               >
                 <div class="col-12">
                   <img
-                    src="../../../public/img/products/prod-1.jpg"
-                    width="40%"
+                    :src="product.img?'/storage/'+product.img:'/img/products/prod-1.jpg'"
                     class="product-image"
                     alt="Product Image"
                   />
@@ -82,7 +81,7 @@
 
                 <div class="col-12 col-sm-6">
                   <h3 class="my-3">{{ product.name }}</h3>
-
+                  <p>{{ product.description }}</p>
                   <hr />
                   <h4>Available Colors</h4>
                   <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -279,7 +278,16 @@
               v-bind:star-size="40"
             ></star-rating>
             <br />
-            <button @click="setrating">publish</button>
+                <label for="comment">Comment</label>
+                <input
+                  v-model="form.comment"
+                  type="text"
+                  name="comment"
+                  placeholder="optional"
+                  class="form-control"
+                />
+                  <br />
+            <button class="btn btn-success" @click="setrating">publish</button>
           </div>
         </div>
       </div>
@@ -311,7 +319,8 @@ export default {
         product_id: "",
         card: "",
         count: "",
-        user_id: ""
+        user_id: "",
+        comment: ""
 
       })
     };
